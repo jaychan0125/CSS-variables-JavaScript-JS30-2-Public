@@ -1,52 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Scoped CSS Variables and JS</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
-  <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Scoped CSS Variables and JS</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <h2>Update CSS Variables with <span class="h1">JS</span></h2> <!--WANT THIS SPAN.h1:JS TO CHANGE COLOUR WITH BASE COLOUR-->
 
-  <div class="controls">
-    <label for="spacing">Spacing:</label>
-    <input id="spacing" type="range" name="spacing" min="10" max="200" value="10" data-sizing="px">
+    <div class="controls">
+      <!-- SPACING BAR -->
+      <label for="spacing">Spacing:</label>
+      <input
+        id="spacing"
+        type="range"
+        name="spacing"
+        min="10"
+        max="200"
+        value="10"
+        data-sizing="px"
+      />
+      <!-- created a data-attribute 'data-sizing' -->
 
-    <label for="blur">Blur:</label>
-    <input id="blur" type="range" name="blur" min="0" max="25" value="10" data-sizing="px">
+      <!-- BLUR BAR -->
+      <label for="blur">Blur:</label>
+      <input
+        id="blur"
+        type="range"
+        name="blur"
+        min="0"
+        max="25"
+        value="10"
+        data-sizing="px"
+      />
 
-    <label for="base">Base Color</label>
-    <input id="base" type="color" name="base" value="#ffc600">
-  </div>
+      <!-- BASE COLOUR SELECTOR -->
+      <label for="base">Base Color</label>
+      <input 
+        id="base" 
+        type="color" 
+        name="base"       
+        value="#ffc600" 
+      />  <!-- input type="color" gives you the colorwheel selector -->
+      
+    </div>
 
-  <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
+    <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500" />
 
-  <style>
+    <!-- CSS STYLESHEET STARTS HERE -->
+    <style>
+      /* declare varables on root element, the highest you can get */
+      :root {
+        /* DECLARE a varioable with '--'syntax */
+        --base: #ffc600;
+        --spacing: 10px;
+        --blur: 10px;
+      }
 
-    /*
+      img {
+        /* USE the variable by saying 'var(--variable)' */
+        padding: var(--spacing);
+        background: var(--base);
+        filter: blur(var(--blur));
+      }
+
+      .h1 {
+        color: var(--base);
+      }
+
+      /*
       misc styles, nothing to do with CSS variables
     */
+      body {
+        text-align: center;
+        background: #193549;
+        color: white;
+        font-family: "helvetica neue", sans-serif;
+        font-weight: 100;
+        font-size: 50px;
+      }
 
-    body {
-      text-align: center;
-      background: #193549;
-      color: white;
-      font-family: 'helvetica neue', sans-serif;
-      font-weight: 100;
-      font-size: 50px;
-    }
+      .controls {
+        margin-bottom: 50px;
+      }
 
-    .controls {
-      margin-bottom: 50px;
-    }
+      input {
+        width: 100px;
+      }
+    </style>
 
-    input {
-      width: 100px;
-    }
-  </style>
+    <!-- JAVASCRIPT STARTS HERE -->
+    <script>
+      //define variables on top
+      // interact with webpage:
+      var inputs = document.querySelectorAll('.controls input');
+      //console.log(inputs); //returns list3: input#spacing, input#blur, input#base
+      //nodeList is different from an array. only have a couple of methods (some people will make their nodeList into an array)
+      //in this project, we can use forEach() method which is available to a nodeList
 
-  <script>
-  </script>
+      function handleUpdate() {
+        //console.log(this.value)    //logs: value of whatever input() was invoked
 
-</body>
+        var suffix = this.dataset.sizing || ''; //dataset is an object containing all the data-attributes of the element. data:attr: sizing OR nothing (since colour has no sizing)
+        //console.log(suffix);    //logs: ('px' or '' when events invoked)
+        
+        //console.log(this.name);   //logs: base, spacing, blur
+        document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);  //made suffix to append 'px' for sizing and blur to value so it's not just a number
+        //console.log(document.documentElement) //logs the whole document
+        //in the whole document, grab the input we are on(sizing/blur/base) and change it's value into the new value
+        //by changing the CSS variable's value, it changes everywhere the CSS variable is used
+      }
+
+      //eventListeners at bottom
+      inputs.forEach(input => input.addEventListener("change", handleUpdate)); //adds an eventListner FOREACH input in the inputS nodeList.
+      inputs.forEach(input => input.addEventListener("mousemove", handleUpdate)); //allows it to trigger a change AS YOU MOVE/CHANGE rather than just when you let go ^
+    
+    </script>
+  </body>
 </html>
